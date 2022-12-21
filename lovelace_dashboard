@@ -1,0 +1,129 @@
+views:
+  - title: Altherma
+    path: altherma
+    icon: mdi:radiator
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.espaltherma_outdoorairtemp
+          - entity: sensor.espaltherma_dhw
+          - entity: sensor.espaltherma_wateroutlet
+          - entity: sensor.espaltherma_fan
+          - entity: sensor.espaltherma_flow
+          - entity: sensor.espaltherma_voltage
+          - entity: sensor.espaltherma_iuoperation
+          - entity: sensor.espaltherma_operationstate
+          - entity: sensor.espaltherma_inverter
+          - entity: sensor.espaltherma_refigtemp
+        title: Messwerte
+        show_header_toggle: true
+        state_color: true
+        footer:
+          type: graph
+          entity: sensor.espaltherma_cop
+          hours_to_show: 24
+          detail: 1
+        header:
+          type: picture
+          image: https://raomin.github.io/ESPAltherma/doc/images/logo.png
+          tap_action:
+            action: none
+          hold_action:
+            action: none
+      - type: gauge
+        entity: sensor.espaltherma_cop
+        min: 0
+        max: 10
+        name: Coefficient of Performance
+        needle: true
+        severity:
+          green: 4
+          yellow: 3
+          red: 0
+      - type: history-graph
+        entities:
+          - entity: sensor.espaltherma_dhw
+          - entity: sensor.espaltherma_operation
+          - entity: sensor.espaltherma_iuoperation
+          - entity: sensor.espaltherma_outdoorairtemp
+          - entity: sensor.espaltherma_wateroutlet
+          - entity: sensor.espaltherma_refigtemp
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Betriebsart
+      - type: picture-elements
+        elements:
+          - type: state-badge
+            title: null
+            entity: sensor.espaltherma_outdoorairtemp
+            style:
+              top: 65%
+              left: 90%
+              transform: translate(-50%, -50%) scale(0.5, 0.5)
+              font-size: 20px
+              color: rgba(0,0,0,0)
+          - type: state-label
+            entity: sensor.espaltherma_voltage
+            suffix: V
+            style:
+              top: 60%
+              left: 60%
+              transform: translate(-50%, -50%) scale(0.5, 0.5)
+              font-size: 20px
+          - type: state-label
+            title: null
+            entity: sensor.espaltherma_operationstate
+            style:
+              top: 56%
+              left: 56%
+              transform: translate(-50%, -50%) scale(0.5, 0.5)
+              font-size: 25px
+          - type: state-badge
+            title: null
+            entity: sensor.espaltherma_fan
+            style:
+              top: 86%
+              left: 79.8%
+              transform: translate(-50%, -50%) scale(0.5, 0.5)
+              font-size: 14px
+              color: rgba(0,0,0,0)
+          - type: state-badge
+            title: DHW temp
+            entity: sensor.espaltherma_dhw
+            style:
+              top: 80%
+              left: 55.5%
+              transform: translate(-50%, -50%) scale(0.5, 0.5)
+              font-size: 20px
+              color: rgba(0,0,0,)
+          - type: state-badge
+            title: Durchfluss
+            entity: sensor.espaltherma_flow
+            style:
+              top: 85%
+              left: 40%
+              transform: translate(-50%, -50%) scale(0.5, 0.5)
+              font-size: 20px
+              color: rgba(0,0,0,0)
+          - type: state-badge
+            title: Fussboden
+            entity: sensor.espaltherma_wateroutlet
+            style:
+              top: 85%
+              left: 25%
+              transform: translate(-50%, -50%) scale(0.5, 0.5)
+              font-size: 20px
+              color: rgba(0,0,0,0)
+        image: >-
+          https://raw.githubusercontent.com/jenstheclown/espaltherma-homeassistant-files/main/altherma1.png
+      - type: entities
+        entities:
+          - entity: sensor.althermasensors
+      - type: gauge
+        entity: sensor.espaltherma_inverter
+        min: 0
+        max: 32
+        name: Stromaufnahme Inverter
+        unit: Amp
+        needle: true
