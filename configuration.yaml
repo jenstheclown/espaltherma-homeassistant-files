@@ -1,0 +1,95 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+http:
+  server_port: 80
+
+sensor:
+  - platform: template
+    sensors:
+      espaltherma_outdoorairtemp:
+        friendly_name: "Outdoor air temp"
+        value_template: "{{ state_attr('sensor.althermasensors','Außenlufttemp.') }}"
+        unit_of_measurement: '°C'
+      espaltherma_fan:
+        friendly_name: "Fan 1"
+        value_template: "{{ state_attr('sensor.althermasensors','Ventilator 1 (10 rpm)') * 10 }}"
+        unit_of_measurement: 'rpm'
+      espaltherma_flow:
+        friendly_name: "Flow sensor"
+        value_template: "{{ state_attr('sensor.althermasensors','Durchflussmenge (l/min)') }}"
+        unit_of_measurement: 'l/min'
+      espaltherma_refigtemp:
+        friendly_name: "Refig temp"
+        value_template: "{{ state_attr('sensor.althermasensors','R3T-Kältemittel Flüssigkeitstemperatur') }}"
+        unit_of_measurement: '°C'
+      espaltherma_inverter:
+        friendly_name: "INV current"
+        value_template: "{{ state_attr('sensor.althermasensors','INV Primärstrom (A)') }}"
+        unit_of_measurement: 'A'
+      espaltherma_operationstate:
+        friendly_name: "Error type"
+        value_template: "{{ state_attr('sensor.althermasensors','Betrieb / Störung') }}"
+      espaltherma_voltage:
+        friendly_name: "Voltage (V)"
+        value_template: "{{ state_attr('sensor.althermasensors','Spannung (V)') }}"
+      espaltherma_wateroutlet:
+        friendly_name: "Leaving water temp"
+        value_template: "{{ state_attr('sensor.althermasensors','Auslass Wasser BUH Temp. (R2T)') }}"
+        unit_of_measurement: '°C'
+      espaltherma_operation:
+        friendly_name: "Operation mode"
+        value_template: "{{ state_attr('sensor.althermasensors','Aktuelle Betriebsart') }}"
+      espaltherma_iuoperation:
+        friendly_name: "Indoor Operation mode"
+        value_template: "{{ state_attr('sensor.althermasensors','I/U betriebsart') }}"
+      espaltherma_dhw:
+        friendly_name: "DHW temp"
+        value_template: "{{ state_attr('sensor.althermasensors','R5T-Brauchwassertemperatur im Speicher') }}"
+        unit_of_measurement: '°C'
+      espaltherma_cop:
+        friendly_name: "COP"
+        unit_of_measurement: 'COP'
+        value_template: "{% if
+  state_attr('sensor.althermasensors','Aktuelle Betriebsart') in ('Heating', 'Cooling')
+  and state_attr('sensor.althermasensors','Frostschutz') == 'OFF'
+  and state_attr('sensor.althermasensors','INV Primärstrom (A)')  | float != 0
+%} 
+{{ 
+  (
+    (
+      state_attr('sensor.althermasensors','Durchflussmenge (l/min)') | float
+      * 0.06
+      * 1.16
+      *
+        (
+          state_attr('sensor.althermasensors','Auslass Wasser Wärmetauscher Temp. (R1T)') | float
+          - state_attr('sensor.althermasensors','R4T-Wasser Rücklauftemp. vor dem Plattenwärmetauscher') | float
+        )
+    )
+    /
+    (
+      state_attr('sensor.althermasensors','INV Primärstrom (A)') | float
+      * state_attr('sensor.althermasensors','Spannung (V)') | float
+      / 1000
+    )
+  )
+  | round(2)
+  | abs
+}}
+{% else %}
+0
+{% endif %}"
+
+#homeassistant:
+#  auth_providers:
+#    - type: trusted_networks
+#      trusted_networks:
+#        - 192.168.1.0/24
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
